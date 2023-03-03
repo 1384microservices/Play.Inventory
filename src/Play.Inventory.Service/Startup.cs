@@ -1,9 +1,13 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Play.Common.MongoDB;
+using Play.Inventory.Service.Clients;
+using Play.Inventory.Service.Entities;
 
 namespace Play.Inventory.Service
 {
@@ -19,6 +23,13 @@ namespace Play.Inventory.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+            .AddMongo()
+            .AddMongoRepository<InventoryItem>("inventoryitems");
+            services.AddHttpClient<CatalogClient>(c =>
+            {
+                c.BaseAddress = new Uri("https://localhost:5001");
+            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
