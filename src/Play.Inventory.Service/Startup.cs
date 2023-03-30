@@ -1,3 +1,5 @@
+using System;
+using GreenPipes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +10,7 @@ using Play.Common.Identity;
 using Play.Common.MassTransit;
 using Play.Common.MongoDB;
 using Play.Inventory.Service.Entities;
+using Play.Inventory.Service.Exceptions;
 
 namespace Play.Inventory.Service;
 
@@ -27,7 +30,11 @@ public class Startup
         .AddMongo()
         .AddMongoRepository<InventoryItem>("inventoryitems")
         .AddMongoRepository<CatalogItem>("catalogitems")
-        .AddMassTransitWithRabbitMQ()
+        .AddMassTransitWithRabbitMQ(retryConfig =>
+        {
+            retryConfig.Interval(3, TimeSpan.FromSeconds(5));
+            retryConfig.Ignore<UnknownItemException>();
+        })
         .AddJwtBearerAuthentication()
         ;
 
