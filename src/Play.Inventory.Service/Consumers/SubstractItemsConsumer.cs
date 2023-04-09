@@ -10,7 +10,14 @@ namespace Play.Inventory.Service.Consumers;
 public class SubstractItemsConsumer : IConsumer<SubstractItems>
 {
     private readonly IRepository<InventoryItem> _inventoryItemRepository;
+
     private readonly IRepository<CatalogItem> _catalogItemRepository;
+
+    public SubstractItemsConsumer(IRepository<InventoryItem> inventoryItemRepository, IRepository<CatalogItem> catalogItemRepository)
+    {
+        _inventoryItemRepository = inventoryItemRepository;
+        _catalogItemRepository = catalogItemRepository;
+    }
 
     public async Task Consume(ConsumeContext<SubstractItems> context)
     {
