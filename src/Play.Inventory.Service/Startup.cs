@@ -28,8 +28,8 @@ public class Startup
     {
         services
         .AddMongo()
-        .AddMongoRepository<InventoryItem>("inventoryitems")
-        .AddMongoRepository<CatalogItem>("catalogitems")
+        .AddMongoRepository<InventoryItem>("InventoryItems")
+        .AddMongoRepository<CatalogItem>("CatalogItems")
         .AddMassTransitWithRabbitMQ(retryConfig =>
         {
             retryConfig.Interval(3, TimeSpan.FromSeconds(5));
