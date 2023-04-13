@@ -58,6 +58,8 @@ public class GrantItemsConsumer : IConsumer<GrantItems>
             await _inventoryItemRepository.UpdateAsync(inventoryItem);
         }
 
-        await context.Publish(new InventoryItemsGranted(message.CorrelationId));
+        var inventoryItemsGrantedTask = context.Publish(new InventoryItemsGranted(message.CorrelationId));
+        var inventoryItemsUpdatedTask = context.Publish(new InventoryItemUpdated(inventoryItem.UserId, inventoryItem.CatalogItemId, inventoryItem.Quantity));
+        await Task.WhenAll(inventoryItemsGrantedTask, inventoryItemsUpdatedTask);
     }
 }
