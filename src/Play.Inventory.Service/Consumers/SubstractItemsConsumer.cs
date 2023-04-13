@@ -33,6 +33,11 @@ public class SubstractItemsConsumer : IConsumer<SubstractItems>
 
         if (inventoryItem is not null)
         {
+            if (inventoryItem.MessageIds.Contains(context.MessageId.Value))
+            {
+                await context.Publish(new InventoryItemsSubstracted(message.CcorrelationId));
+                return;
+            }
             inventoryItem.Quantity -= message.Quantity;
             await _inventoryItemRepository.UpdateAsync(inventoryItem);
         }
