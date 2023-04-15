@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <PackageDescription>Play economy inventory service events.</PackageDescription>
+    <Authors>Andrei Tudor</Authors>
+    <Company>Play Economy</Company>
   </PropertyGroup>
-
 </Project>
