@@ -30,7 +30,7 @@ public class Startup
         .AddMongo()
         .AddMongoRepository<InventoryItem>("InventoryItems")
         .AddMongoRepository<CatalogItem>("CatalogItems")
-        .AddMassTransitWithRabbitMQ(retryConfig =>
+        .AddMassTransitWithMessageBroker(Configuration, retryConfig =>
         {
             retryConfig.Interval(3, TimeSpan.FromSeconds(5));
             retryConfig.Ignore<UnknownItemException>();
