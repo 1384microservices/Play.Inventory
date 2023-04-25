@@ -47,6 +47,22 @@ dotnet pack .\src\Play.Inventory.Contracts\ --configuration Release -p:PackageVe
 dotnet nuget push ..\packages\Play.Inventory.Contracts.$version.nupkg --api-key $gh_pat --source "github"
 ```
 
+### Publish service container image
+```powershell
+# Create docker image
+$imageVersion="1.0.5"
+docker-compose build
+docker tag "play.inventory:latest" "play.inventory:${imageVersion}"
 
+$appName="playeconomy1384"
+$repositoryUrl="${appName}.azurecr.io"
+
+docker tag "play.inventory:latest" "${repositoryUrl}/play.inventory:${imageVersion}"
+
+# Optional, run it if you're not authenticated
+az acr login --name $appName
+
+docker push "${repositoryUrl}/play.inventory:${imageVersion}"
+```
 
 [^wsl]:[You need to have WSL upfront](https://learn.microsoft.com/en-us/windows/wsl/)
