@@ -65,4 +65,18 @@ az acr login --name $appName
 docker push "${repositoryUrl}/play.inventory:${imageVersion}"
 ```
 
+### Creating the Azure Managed Identity and granting access to Key Vault secrets
+```powershell
+# Create azure Identity
+$appName="playeconomy1384"
+$k8sNS="inventory"
+az identity create --resource-group $appName --name $k8sNS
+
+# Fetch Identity client id
+$identityClientId = az identity show --resource-group $appName --name $k8sNS --query clientId -otsv
+
+# Assign get and list permissions to client (Identity)
+az keyvault set-policy -n $appName --secret-permissions get list --spn $identityClientId
+```
+
 [^wsl]:[You need to have WSL upfront](https://learn.microsoft.com/en-us/windows/wsl/)
