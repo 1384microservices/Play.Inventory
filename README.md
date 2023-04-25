@@ -50,8 +50,9 @@ dotnet nuget push ..\packages\Play.Inventory.Contracts.$version.nupkg --api-key 
 ### Publish service container image
 ```powershell
 # Create docker image
-$imageVersion="1.0.6"
 docker-compose build
+
+$imageVersion="1.0.7"
 docker tag "play.inventory:latest" "play.inventory:${imageVersion}"
 
 $appName="playeconomy1384"
