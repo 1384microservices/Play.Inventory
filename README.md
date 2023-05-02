@@ -66,26 +66,48 @@ az acr login --name $appName
 docker push "${repositoryUrl}/play.inventory:${imageVersion}"
 ```
 
-### Creating the Azure Managed Identity and granting access to Key Vault secrets
+### Create K8S service pod
+```powershell
+$k8sNS="inventory"
+
+# Create namespace
+kubectl create namespace  $k8sNS
+
+# Create pod
+kubectl apply -f kubernetes\inventory.yaml -n $k8sNS
+
+# Query pod status
+kubectl get pods -n $k8sNS
+
+# Query logs
+kubectl logs '[pod-name]' -n $k8sNS
+kubectl describe '[pod-name]' -n $k8sNS
+
+# Query service
+kubectl get svc -n $k8sNS
+```
+
+### Create pod managed identity and grabt Key Vault access
 ```powershell
 # Create azure Identity
 $appName="playeconomy1384"
 $k8sNS="inventory"
+
 az identity create --resource-group $appName --name $k8sNS
 
-# Fetch Identity client id
+# Create pod managed identity
+$identityResourceId = az identity show --resource-group $appName --name $k8sNS --query id -otsv
+az aks pod-identity add --resource-group $appName --cluster-name $appName --namespace $k8sNS --name $k8sNS --identity-resource-id $identityResourceId
+
+# Grant pod Key Vault access
 $identityClientId = az identity show --resource-group $appName --name $k8sNS --query clientId -otsv
-
-# Assign get and list permissions to client (Identity)
 az keyvault set-policy -n $appName --secret-permissions get list --spn $identityClientId
-```
 
-### Establish the federated identity credentials
-```powershell
-$appName="playeconomy1384"
-$k8sNS="inventory"
+# Set federated identity credentials
 $aksOIDIssuer=az aks show -n $appName -g $appName --query "oidcIssuerProfile.issuerUrl" -otsv
 az identity federated-credential create --name $k8sNS --identity-name $k8sNS --resource-group $appName --issuer $aksOIDIssuer --subject "system:serviceaccount:${k8sNS}:${k8sNS}-serviceaccount"
 ```
+
+
 
 [^wsl]:[You need to have WSL upfront](https://learn.microsoft.com/en-us/windows/wsl/)

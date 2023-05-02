@@ -15,12 +15,14 @@ spec:
       serviceAccountName: inventory-serviceaccount
       containers:
       - name: inventory
-        image: playeconomy1384.azurecr.io/play.inventory:1.0.6
+        image: playeconomy1384.azurecr.io/play.inventory:1.0.7
         env:
         - name: ServiceSettings__MessageBroker
           value: SERVICEBUS
         - name: ServiceSettings__KeyVaultName
           value: playeconomy1384
+        - name: ServiceSettings__Authority
+          value: https://playeconomy1384.northeurope.cloudapp.azure.com/identity-svc
         resources:
           limits:
             memory: "128Mi"
