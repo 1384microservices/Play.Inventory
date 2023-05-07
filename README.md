@@ -108,6 +108,20 @@ $aksOIDIssuer=az aks show -n $appName -g $appName --query "oidcIssuerProfile.iss
 az identity federated-credential create --name $k8sNS --identity-name $k8sNS --resource-group $appName --issuer $aksOIDIssuer --subject "system:serviceaccount:${k8sNS}:${k8sNS}-serviceaccount"
 ```
 
+### Install the helm chart
+```powershell
+$helmUser=[guid]::Empty.Guid
+
+$appname="playeconomy1384"
+$registry="${appname}.azurecr.io"
+$helmPassword=az acr login --name $appname --expose-token --output tsv --query accessToken
+helm registry login $registry --username $helmUser --password $helmPassword
+
+$k8sNS="inventory"
+$chartVersion="0.1.0"
+helm upgrade inventory-service oci://$registry/helm/microservice --version $chartVersion -f ./helm/values.yaml -n $k8sNS --install
+```
+
 
 
 [^wsl]:[You need to have WSL upfront](https://learn.microsoft.com/en-us/windows/wsl/)
