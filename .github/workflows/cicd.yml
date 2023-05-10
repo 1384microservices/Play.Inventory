@@ -74,7 +74,7 @@ jobs:
         with:
           push: false
           tags: |
-            playeconomy1384.azurecr.io/play.Inventory:${{needs.generate-version.outputs.new_version}}
+            playeconomy1384.azurecr.io/play.inventory:${{needs.generate-version.outputs.new_version}}
           build-args: |
             GITHUB_PAT=${{secrets.GITHUB_TOKEN}}
 
