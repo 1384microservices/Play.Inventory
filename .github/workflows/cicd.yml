@@ -102,3 +102,6 @@ jobs:
             --resource-group ${{vars.AZ_RG_NAME}} `
             --name ${{vars.AZ_AKS_CLUSTER_NAME}}
 
+      - name: Install Helm
+        uses: azure/setup-helm@v2.0
+
