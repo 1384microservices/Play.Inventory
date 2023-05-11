@@ -80,6 +80,12 @@ jobs:
           tenant-id: ${{secrets._AZURE_TENANT_ID}}
           subscription-id: ${{secrets._AZURE_SUB_ID}}
 
+      - name: ACR Login
+        shell: pwsh
+        run: |
+          az acr login `
+            --name ${{vars.AZ_ACR_REGISTRY_NAME}}
+
       - name: Build and publish docker image
         uses: docker/build-push-action@v4
         with:
