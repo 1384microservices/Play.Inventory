@@ -57,6 +57,7 @@ jobs:
             -o out
 
       - name: Publish
+        shell: pwsh
         run: |
           dotnet nuget push out/*.nupkg
         env:
