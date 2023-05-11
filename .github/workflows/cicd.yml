@@ -89,7 +89,7 @@ jobs:
       - name: Build and publish docker image
         uses: docker/build-push-action@v4
         with:
-          push: false
+          push: true
           tags: |
             playeconomy1384.azurecr.io/play.inventory:${{needs.generate-version.outputs.new_version}}
           build-args: |
