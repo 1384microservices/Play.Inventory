@@ -1,4 +1,4 @@
-name: Play.Inventory CICD
+name: Play.Inventory service CICD
 
 on:
   push:
@@ -42,17 +42,19 @@ jobs:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Restore dependencies
+        shell: pwsh
         run: |
-          dotnet restore ./src/Play.Inventory.Contracts/ \
-          --verbosity minimal
+          dotnet restore src/Play.Inventory.Contracts/ `
+            --verbosity minimal
 
       - name: Pack
+        shell: pwsh
         run: |
-          dotnet pack ./src/Play.Inventory.Contracts/ \
-          --configuration Release \
-          -p:PackageVersion=${{needs.generate-version.outputs.new_version}} \
-          -p:RepositoryUrl=https://github.com/${{github.repository_owner}}/Play.Inventory \
-          -o out
+          dotnet pack src/Play.Inventory.Contracts/ `
+            --configuration Release `
+            -p:PackageVersion=${{needs.generate-version.outputs.new_version}} `
+            -p:RepositoryUrl=https://github.com/${{github.repository_owner}}/Play.Inventory `
+            -o out
 
       - name: Publish
         run: |
@@ -78,5 +80,3 @@ jobs:
           build-args: |
             GITHUB_PAT=${{secrets.GITHUB_TOKEN}}
 
-
-      
