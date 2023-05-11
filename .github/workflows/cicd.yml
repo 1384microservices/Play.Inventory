@@ -95,3 +95,10 @@ jobs:
           build-args: |
             GITHUB_PAT=${{secrets.GITHUB_TOKEN}}
 
+      - name: Get AKS credentials
+        shell: pwsh
+        run: |
+          az aks get-credentials `
+            --resource-group ${{vars.AZ_RG_NAME}} `
+            --name ${{vars.AZ_AKS_CLUSTER_NAME}}
+
