@@ -6,8 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Play.Common.Configuration;
 using Play.Common.HealthChecks;
 using Play.Common.Identity;
+using Play.Common.Logging;
 using Play.Common.MassTransit;
 using Play.Common.MongoDB;
 using Play.Inventory.Service.Entities;
@@ -48,6 +50,8 @@ public class Startup
         });
 
         services.AddHealthChecks().AddMongoDb();
+
+        services.AddSeqLogging(Configuration.GetSeqSettings());
     }
 
 
