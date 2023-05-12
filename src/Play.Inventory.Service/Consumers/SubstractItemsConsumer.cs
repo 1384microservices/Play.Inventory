@@ -47,7 +47,7 @@ public class SubstractItemsConsumer : IConsumer<SubstractItems>
         {
             if (inventoryItem.MessageIds.Contains(context.MessageId.Value))
             {
-                await context.Publish(new InventoryItemsSubstracted(message.CcorrelationId));
+                await context.Publish(new InventoryItemsSubstracted(message.CorrelationId));
                 return;
             }
             inventoryItem.Quantity -= message.Quantity;
@@ -55,7 +55,7 @@ public class SubstractItemsConsumer : IConsumer<SubstractItems>
             await context.Publish(new InventoryItemUpdated(inventoryItem.UserId, inventoryItem.CatalogItemId, inventoryItem.Quantity));
         }
 
-        await context.Publish(new InventoryItemsSubstracted(message.CcorrelationId));
+        await context.Publish(new InventoryItemsSubstracted(message.CorrelationId));
         
     }
 }
