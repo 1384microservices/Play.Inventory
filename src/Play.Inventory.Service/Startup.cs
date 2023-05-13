@@ -30,28 +30,34 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services
-        .AddMongo()
-        .AddMongoRepository<InventoryItem>("InventoryItems")
-        .AddMongoRepository<CatalogItem>("CatalogItems")
-        .AddMassTransitWithMessageBroker(Configuration, retryConfig =>
-        {
-            retryConfig.Interval(3, TimeSpan.FromSeconds(5));
-            retryConfig.Ignore<UnknownItemException>();
-        })
-        .AddJwtBearerAuthentication()
-        ;
+            .AddMongo()
+            .AddMongoRepository<InventoryItem>("InventoryItems")
+            .AddMongoRepository<CatalogItem>("CatalogItems")
+            .AddMassTransitWithMessageBroker(Configuration, retryConfig =>
+            {
+                retryConfig.Interval(3, TimeSpan.FromSeconds(5));
+                retryConfig.Ignore<UnknownItemException>();
+            })
+            .AddJwtBearerAuthentication()
+            ;
 
         // RetryPolicies(services);
 
-        services.AddControllers();
-        services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Play.Inventory.Service", Version = "v1" });
-        });
+        services
+            .AddControllers();
 
-        services.AddHealthChecks().AddMongoDb();
+        services
+            .AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Play.Inventory.Service", Version = "v1" });
+            });
 
-        services.AddSeqLogging(Configuration.GetSeqSettings());
+        services
+            .AddHealthChecks()
+            .AddMongoDb();
+
+        services
+            .AddSeqLogging(Configuration.GetSeqSettings());
     }
 
 
