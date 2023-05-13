@@ -12,6 +12,8 @@ using Play.Common.Identity;
 using Play.Common.Logging;
 using Play.Common.MassTransit;
 using Play.Common.MongoDB;
+using Play.Common.OpenTelemetry;
+using Play.Common.Settings;
 using Play.Inventory.Service.Entities;
 using Play.Inventory.Service.Exceptions;
 
@@ -58,6 +60,9 @@ public class Startup
 
         services
             .AddSeqLogging(Configuration.GetSeqSettings());
+
+        services
+            .AddTracing(Configuration.GetServiceSettings(), Configuration.GetSection<JaegerSettings>());
     }
 
 
@@ -76,11 +81,8 @@ public class Startup
         }
 
         app.UseRouting();
-
         app.UseAuthentication();
-
         app.UseAuthorization();
-
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
