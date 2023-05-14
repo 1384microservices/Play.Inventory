@@ -59,10 +59,9 @@ public class Startup
             .AddMongoDb();
 
         services
-            .AddSeqLogging(Configuration.GetSeqSettings());
-
-        services
-            .AddTracing(Configuration.GetServiceSettings(), Configuration.GetSection<JaegerSettings>());
+            .AddSeqLogging(Configuration.GetSeqSettings())
+            .AddTracing(Configuration.GetServiceSettings(), Configuration.GetSection<JaegerSettings>())
+            .AddMetrics(Configuration.GetServiceSettings());
     }
 
 
@@ -79,7 +78,7 @@ public class Startup
                 cfg.WithOrigins(Configuration["AllowedOrigin"]).AllowAnyHeader().AllowAnyMethod();
             });
         }
-
+        app.UseOpenTelemetryPrometheusScrapingEndpoint();
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();

@@ -1,8 +1,11 @@
 using System;
+using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Play.Common;
+using Play.Common.Configuration;
 using Play.Inventory.Contracts;
 using Play.Inventory.Service.Entities;
 using Play.Inventory.Service.Exceptions;
@@ -14,15 +17,20 @@ public class GrantItemsConsumer : IConsumer<GrantItems>
     private readonly IRepository<InventoryItem> _inventoryItemRepository;
     private readonly IRepository<CatalogItem> _catalogItemRepository;
     private readonly ILogger<GrantItemsConsumer> _logger;
+    private readonly Counter<int> _itemsGrantedCounter;
 
     public GrantItemsConsumer(
         IRepository<InventoryItem> inventoryItemRepository, 
         IRepository<CatalogItem> catalogItemRepository, 
-        ILogger<GrantItemsConsumer> logger)
+        ILogger<GrantItemsConsumer> logger, 
+        IConfiguration configuration)
     {
         _inventoryItemRepository = inventoryItemRepository;
         _catalogItemRepository = catalogItemRepository;
         _logger = logger;
+
+        var meter = new Meter(configuration.GetServiceSettings().Name);
+        _itemsGrantedCounter = meter.CreateCounter<int>("ItemsGranted");
     }
 
     public async Task Consume(ConsumeContext<GrantItems> context)
@@ -74,5 +82,6 @@ public class GrantItemsConsumer : IConsumer<GrantItems>
         var inventoryItemsGrantedTask = context.Publish(new InventoryItemsGranted(message.CorrelationId));
         var inventoryItemsUpdatedTask = context.Publish(new InventoryItemUpdated(inventoryItem.UserId, inventoryItem.CatalogItemId, inventoryItem.Quantity));
         await Task.WhenAll(inventoryItemsGrantedTask, inventoryItemsUpdatedTask);
+        _itemsGrantedCounter.Add(1);
     }
 }
